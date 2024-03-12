@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView titleTextView;
     private TextView thoughtTextView;
     private Button showBtn;
+    private Button updateBtn;
     // Firebase Instance
     private final FirebaseFirestore db= FirebaseFirestore.getInstance();
     //Firebase Document Reference
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         titleTextView=findViewById(R.id.rec_title);
         thoughtTextView=findViewById(R.id.rec_thought);
         showBtn=findViewById(R.id.show_button);
+        updateBtn=findViewById(R.id.update_button);
 
         // Saving data into the firebase
         saveBtn.setOnClickListener(v->{
@@ -101,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("MainActDB", "onFailure: "+e.toString());
                         }
                     });
+        });
+        updateBtn.setOnClickListener(v->{
+            String title=titleText.getText().toString().trim();
+            String thought=thoughtText.getText().toString().trim();
+            Map<String,Object> data=new HashMap<>();
+
+            // We can update data by invoking that update() method
+            journalRef.update(KEY_THOUGHT,thought)
+                    .addOnSuccessListener(unused -> Toast.makeText(MainActivity.this, "Successfully updated", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Log.d("MainActDB", "onFailure: Successfully Updated data"));
         });
     }
 
