@@ -1,6 +1,7 @@
 package com.hitman.introfirestore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -14,7 +15,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import org.w3c.dom.Text;
 
@@ -98,6 +101,33 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("MainActDB", "onFailure: "+e.toString());
                         }
                     });
+        });
+    }
+
+    /*
+        Inside on-start we will add the snapshot because it's fine to add it inside the on create but it's more convenient to add it inside the on start
+
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        journalRef.addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                // Checking is there any kind of error or not
+                if(error!=null)
+                {
+                    Toast.makeText(MainActivity.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                }
+                // checking if the snapshot is exist or not
+                if(value!=null&&value.exists()){
+                    String title=value.getString(KEY_TITLE);
+                    String thought=value.getString(KEY_THOUGHT);
+
+                    titleTextView.setText(title);
+                    thoughtTextView.setText(thought);
+                }
+            }
         });
     }
 }
