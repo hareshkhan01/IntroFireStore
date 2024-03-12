@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView thoughtTextView;
     private Button showBtn;
     private Button updateBtn;
+    private Button deleteBtn;
     // Firebase Instance
     private final FirebaseFirestore db= FirebaseFirestore.getInstance();
     //Firebase Document Reference
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         thoughtTextView=findViewById(R.id.rec_thought);
         showBtn=findViewById(R.id.show_button);
         updateBtn=findViewById(R.id.update_button);
-
+        deleteBtn=findViewById(R.id.button_delete);
         // Saving data into the firebase
         saveBtn.setOnClickListener(v->{
             String title= titleText.getText().toString().trim();
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         });
+        // Update
         updateBtn.setOnClickListener(v->{
             String title=titleText.getText().toString().trim();
             String thought=thoughtText.getText().toString().trim();
@@ -113,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
             journalRef.update(KEY_THOUGHT,thought)
                     .addOnSuccessListener(unused -> Toast.makeText(MainActivity.this, "Successfully updated", Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(e -> Log.d("MainActDB", "onFailure: Successfully Updated data"));
+        });
+        // Delete data from the firestore
+        deleteBtn.setOnClickListener(v->{
+            // By this way we can delete just a field or key from DB
+                //journalRef.update(KEY_THOUGHT, FieldValue.delete());
+            // By this way we can delete all
+            journalRef.delete();
         });
     }
 
@@ -138,6 +148,10 @@ public class MainActivity extends AppCompatActivity {
 
                     titleTextView.setText(title);
                     thoughtTextView.setText(thought);
+                }
+                else {
+                    thoughtTextView.setText("");
+                    titleTextView.setText("");
                 }
             }
         });
