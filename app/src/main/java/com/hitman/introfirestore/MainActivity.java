@@ -7,11 +7,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +25,13 @@ public class MainActivity extends AppCompatActivity {
     private EditText titleText;
     private EditText thoughtText;
     private Button saveBtn;
+    private TextView titleTextView;
+    private TextView thoughtTextView;
+    private Button showBtn;
     // Firebase Instance
     private final FirebaseFirestore db= FirebaseFirestore.getInstance();
-
+    //Firebase Document Reference
+    private DocumentReference  journalRef = db.collection("Journals").document("First Thought");
     // KEY Name as variables
     public static final String KEY_TITLE="title";
     public static final String KEY_THOUGHT="thought";
@@ -33,7 +42,11 @@ public class MainActivity extends AppCompatActivity {
         titleText=findViewById(R.id.editTextTitle);
         thoughtText=findViewById(R.id.editTextThoughts);
         saveBtn=findViewById(R.id.saveButton);
+        titleTextView=findViewById(R.id.rec_title);
+        thoughtTextView=findViewById(R.id.rec_thought);
+        showBtn=findViewById(R.id.show_button);
 
+        // Saving data into the firebase
         saveBtn.setOnClickListener(v->{
             String title= titleText.getText().toString().trim();
             String thought= thoughtText.getText().toString().trim();
@@ -60,5 +73,31 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
+        // Show Data
+        showBtn.setOnClickListener(v->{
+            journalRef.get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            // Checking if the document is exist or not
+                            if(documentSnapshot.exists()){
+                                String title=documentSnapshot.getString(KEY_TITLE);
+                                String thought=documentSnapshot.getString(KEY_THOUGHT);
+
+                                titleTextView.setText(title);
+                                thoughtTextView.setText(thought);
+                            }
+                            else{
+                                Toast.makeText(MainActivity.this,"No Data is present",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("MainActDB", "onFailure: "+e.toString());
+                        }
+                    });
+        });
     }
 }
