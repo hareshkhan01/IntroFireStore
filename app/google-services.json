@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "553206161611",
+    "project_id": "introfirestore-550a7",
+    "storage_bucket": "introfirestore-550a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553206161611:android:dbef98585066981a373b4e",
+        "android_client_info": {
+          "package_name": "com.hitman.introfirestore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyzM4XgkpLpA2H4wplEWpaKu_R3A4k6hQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
